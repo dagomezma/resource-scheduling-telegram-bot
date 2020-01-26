@@ -100,8 +100,8 @@ Downloading tar
 
 .. code:: shell
 
-    $ wget https://github.com/dagomezma/resource-scheduling-telegram-bot.tgz
-    $ tar -xzvf resource-scheduling-telegram-bot.tgz
+    $ wget https://github.com/dagomezma/resource-scheduling-telegram-bot/archive/v0.1.tar.gz
+    $ tar -xzvf resource-scheduling-telegram-bot-x.x.tar.gz
 
 Finishing setup
 ----------------
