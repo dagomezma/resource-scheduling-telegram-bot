@@ -19,18 +19,26 @@ else
             source non-git/bot-environment/bin/activate
             pip install -r requirements.txt
 
-	    echo "Writing default bot configurations..."
+            echo "Writing default bot configurations..."
             mkdir -p non-git/logs
             mkdir -p non-git/user-configs
-            echo -e "RES-A\nRES-B\nRES-C\n" > non-git/user-configs/RESOURCES.txt # example resources
-            echo -e "ACT-1\nACT-2\n" > non-git/user-configs/ACTIVITIES.txt # example activities
+            if ! [[ -f non-git/user-configs/RESOURCES.txt ]]; then
+                echo -e "RES-A\nRES-B\nRES-C\n" > non-git/user-configs/RESOURCES.txt # example resources
+            else
+                touch non-git/user-configs/RESOURCES.txt
+            fi
+            if ! [[ -f non-git/user-configs/ACTIVITIES.txt ]]; then
+                echo -e "ACT-1\nACT-2\n" > non-git/user-configs/ACTIVITIES.txt # example activities
+            else
+                touch non-git/user-configs/ACTIVITIES.txt
+            fi
             touch non-git/user-configs/TELEGRAM-BOT-TOKEN.txt
-            touch non-git/user-configs/AUTORIZED-TELEGRAM-IDS.txt
+            touch non-git/user-configs/AUTHORIZED-TELEGRAM-IDS.txt
 
-	    echo "Writing token to appropriate file..."
+            echo "Writing token to appropriate file..."
             echo $token > non-git/user-configs/TELEGRAM-BOT-TOKEN.txt
 
-	    echo "Applying custom changes to schedule package..."
+            echo "Applying custom changes to schedule package..."
             sh custom-schedule-lib/apply-schedule-changes.sh
 
             echo "Updating bot path at logrotate.conf...." 
