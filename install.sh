@@ -41,8 +41,11 @@ else
             echo "Applying custom changes to schedule package..."
             sh custom-schedule-lib/apply-schedule-changes.sh
 
-            echo "Updating bot path at logrotate.conf...." 
-            sed -i "s+bot-path+$PWD+g" logrotate.conf
+            echo "Updating project path at logrotate.conf..." 
+            sed -i "s+prj-path+$PWD+g" logrotate.conf
+            
+            echo "Updating project path at startup-script.sh..." 
+            sed -i "s+prj-path+$PWD+g" startup-script.sh
         fi
     fi
 fi
