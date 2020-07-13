@@ -5,7 +5,7 @@
 project_path="prj-path"
 
 cd $project_path
-source "$project_path/bot-environment/bin/activate"
+source "$project_path/non-git/bot-environment/bin/activate"
 nohup python3 "$project_path/resource-scheduling-telegram-bot.py" >> "$project_path/non-git/logs/resource-scheduling-telegram-bot.log" 2>&1 &
 while true; do logrotate "$project_path/logrotate.conf" -s "$project_path/non-git/logrotate.status"; sleep 3600; done
 
