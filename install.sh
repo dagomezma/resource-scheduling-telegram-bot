@@ -54,7 +54,7 @@ else
             echo "Updating user at startup-script.sh file..."
             sed -i "s+example-user-editable-by-install.sh+$(id -un)+g" non-git/startup-script.sh
             
-            cho "Extracting logrotate.conf file..."
+            echo "Extracting logrotate.conf file..."
             cp setup-files/logrotate.conf non-git/
             echo "Updating project path at logrotate.conf file..."
             sed -i "s+prj-path-editable-by-install.sh+$PWD+g" non-git/logrotate.conf
