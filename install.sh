@@ -1,10 +1,12 @@
 #!/bin/bash
 
-if [[ $(dpkg -s python3-venv 2>&1) =~ "not installed" ]]; then
+if [ $(id -u) = 0 ]; then
+    echo "Shouldn't be run as root. Nothing will be done."
+elif [[ $(dpkg -s python3-venv 2>&1) =~ "not installed" ]]; then
     echo "Python 3 virtual environments package (python3-venv) is not installed. Nothing will be done."
 else
-    BOTFILE=resource-scheduling-telegram-bot.py
-    LOGCONF=logrotate.conf
+    BOTFILE="resource-scheduling-telegram-bot.py"
+    LOGCONF="setup-files/logrotate.conf"
     if ! [[ -f "$BOTFILE" && -f "$LOGCONF" ]]; then
         echo "Not currently in schedule-bot folder. Nothing will be done."
     else
@@ -22,6 +24,12 @@ else
             echo "Writing default bot configurations..."
             mkdir -p non-git/logs
             mkdir -p non-git/user-configs
+            touch non-git/logs/resource-scheduling-telegram-bot.log
+            touch non-git/logrotate.status
+            touch non-git/user-configs/TELEGRAM-BOT-TOKEN.txt
+            touch non-git/user-configs/AUTHORIZED-TELEGRAM-IDS.txt
+            
+            # default resources and activities
             if ! [[ -f non-git/user-configs/RESOURCES.txt ]]; then
                 echo -e "RES-A\nRES-B\nRES-C\n" > non-git/user-configs/RESOURCES.txt # example resources
             else
@@ -32,20 +40,35 @@ else
             else
                 touch non-git/user-configs/ACTIVITIES.txt
             fi
-            touch non-git/user-configs/TELEGRAM-BOT-TOKEN.txt
-            touch non-git/user-configs/AUTHORIZED-TELEGRAM-IDS.txt
 
             echo "Writing token to appropriate file..."
             echo $token > non-git/user-configs/TELEGRAM-BOT-TOKEN.txt
 
             echo "Applying custom changes to schedule package..."
-            sh custom-schedule-lib/apply-schedule-changes.sh
+            sh setup-files/custom-schedule-lib/apply-schedule-changes.sh
 
-            echo "Updating project path at logrotate.conf..." 
-            sed -i "s+prj-path+$PWD+g" logrotate.conf
+            echo "Extracting startup-script.sh file..."
+            cp setup-files/startup-script.sh non-git/
+            echo "Updating project path at startup-script.sh file..."
+            sed -i "s+prj-path-editable-by-install.sh+$PWD+g" non-git/startup-script.sh
+            echo "Updating user at startup-script.sh file..."
+            sed -i "s+example-user-editable-by-install.sh+$(id -un)+g" non-git/startup-script.sh
             
-            echo "Updating project path at startup-script.sh..." 
-            sed -i "s+prj-path+$PWD+g" startup-script.sh
+            cho "Extracting logrotate.conf file..."
+            cp setup-files/logrotate.conf non-git/
+            echo "Updating project path at logrotate.conf file..."
+            sed -i "s+prj-path-editable-by-install.sh+$PWD+g" non-git/logrotate.conf
+            echo "Updating user at logrotate.conf file..."
+            sed -i "s+example-user-editable-by-install.sh+$(id -un)+g" non-git/logrotate.conf
+            echo "Updating group at logrotate.conf file..."
+            sed -i "s+example-group-editable-by-install.sh+$(id -gn)+g" non-git/logrotate.conf
+            
+            echo "#########################"
+            echo "If you want to have your bot executed at boot, remember to add the following line to /etc/rc.local file:"
+            echo "sudo -u $(id -un) $PWD/non-git/startup-script.sh &"
+            
+            echo ""
+            echo "Sucessful installation!"
         fi
     fi
 fi
