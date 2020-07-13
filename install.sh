@@ -16,7 +16,10 @@ else
         echo -n "Token: "
         read token
 	if ! [ -z "$token" ]; then # if not empty
-	    echo "Beginning creation of python3 virtual envirnoment..."
+            mkdir non-git
+            echo "Removing previous environment if any..."
+            rm -r non-git/bot-environment
+            echo "Beginning creation of python3 virtual envirnoment..."
             python3 -m venv non-git/bot-environment
             source non-git/bot-environment/bin/activate
             pip install -r requirements.txt
