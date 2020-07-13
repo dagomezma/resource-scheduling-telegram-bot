@@ -286,6 +286,8 @@ def init_database():
                        (    activityID     INTEGER PRIMARY KEY,
                               activity        TEXT,
                         UNIQUE(activity))''')
+    # The following trigger is necessary so as to not inserting NULL records
+    # at the end of each init_database (see below, when inserting NULL to tbl_areas)
     c.execute('''CREATE TRIGGER IF NOT EXISTS UniqueColumnCheckNullInsert
                          BEFORE INSERT
                              ON tbl_activities
