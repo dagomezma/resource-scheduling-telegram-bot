@@ -16,7 +16,7 @@ else
         echo -n "Token: "
         read token
 	if ! [ -z "$token" ]; then # if not empty
-            mkdir non-git
+            mkdir -p non-git
             echo "Removing previous environment if any..."
             rm -r non-git/bot-environment
             echo "Beginning creation of python3 virtual envirnoment..."
